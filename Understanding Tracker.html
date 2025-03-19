@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Tracker</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .box {
+            flex: 1;
+            padding: 50px;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            border: 2px solid black;
+        }
+        .green { background-color: lightgreen; }
+        .yellow { background-color: yellow; }
+        .red { background-color: lightcoral; }
+    </style>
+</head>
+<body>
+    <h1>Understanding Tracker</h1>
+    <div class="container">
+        <div class="box green" onclick="recordResponse('understand')">
+            I understand 😊<br>
+            <span id="understand-count">0</span> responses
+        </div>
+        <div class="box yellow" onclick="recordResponse('help')">
+            I need help 😐<br>
+            <span id="help-count">0</span> responses
+        </div>
+        <div class="box red" onclick="recordResponse('dont_understand')">
+            I do not understand ☹️<br>
+            <span id="dont-understand-count">0</span> responses
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhpyWmrbuKQ30R9QmmoX3YrfVFUC_cfhw",
+            authDomain: "understanding-tracker.firebaseapp.com",
+            databaseURL: "https://understanding-tracker-default-rtdb.firebaseio.com",
+            projectId: "understanding-tracker",
+            storageBucket: "understanding-tracker.firebasestorage.app",
+            messagingSenderId: "487928410018",
+            appId: "1:487928410018:web:75296165a4b29a7b848cfb"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function updateCounts(snapshot) {
+            document.getElementById('understand-count').textContent = snapshot.val().understand || 0;
+            document.getElementById('help-count').textContent = snapshot.val().help || 0;
+            document.getElementById('dont-understand-count').textContent = snapshot.val().dont_understand || 0;
+        }
+
+        // Fetch initial data
+        database.ref('responses').once('value', snapshot => {
+            if (snapshot.exists()) updateCounts(snapshot);
+        });
+
+        // Real-time updates
+        database.ref('responses').on('value', snapshot => {
+            if (snapshot.exists()) updateCounts(snapshot);
+        });
+
+        function recordResponse(type) {
+            let ref = database.ref('responses/' + type);
+            ref.transaction(count => (count || 0) + 1);
+        }
+    </script>
+</body>
+</html>
