@@ -10,6 +10,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            background-color: #f1ebdd;
         }
         .container {
             display: flex;
@@ -27,6 +28,10 @@
             text-align: center;
             border: 2px solid black;
         }
+        h1 {
+            font-family: Monaco;
+            font-size: 40rem;
+        }
         .green { background-color: lightgreen; }
         .yellow { background-color: yellow; }
         .red { background-color: lightcoral; }
@@ -38,19 +43,19 @@
         <div class="box green" onclick="recordResponse('understand')">
             I understand<br>
             😊<br>
-            Ms. Rawaan K.<br>
+            Ms. Rawaan K.<br><br>
             <span id="understand-count">0</span> responses
         </div>
         <div class="box yellow" onclick="recordResponse('help')">
             I need help<br> 
             😐<br>
-            Ms. Rawaan K.<br>
+            Ms. Rawaan K.<br><br>
             <span id="help-count">0</span> responses
         </div>
         <div class="box red" onclick="recordResponse('dont_understand')">
             I do not understand<br>
             ☹️<br>
-            Ms. Rawaan K.<br>
+            Ms. Rawaan K.<br><br>
             <span id="dont-understand-count">0</span> responses
         </div>
     </div>
