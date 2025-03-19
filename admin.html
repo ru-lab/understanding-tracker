@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Reset Tracker</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .responses {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .box {
+            flex: 1;
+            padding: 50px;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid black;
+        }
+        .green { background-color: lightgreen; }
+        .yellow { background-color: yellow; }
+        .red { background-color: lightcoral; }
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin - Understanding Tracker</h1>
+    <div class="container">
+        <div class="responses">
+            <div class="box green">
+                I understand 😊<br>
+                <span id="understand-count">0</span> responses
+            </div>
+            <div class="box yellow">
+                I need help 😐<br>
+                <span id="help-count">0</span> responses
+            </div>
+            <div class="box red">
+                I do not understand ☹️<br>
+                <span id="dont-understand-count">0</span> responses
+            </div>
+        </div>
+        <button class="reset-btn" onclick="resetCounts()">Reset All Counts</button>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhpyWmrbuKQ30R9QmmoX3YrfVFUC_cfhw",
+            authDomain: "understanding-tracker.firebaseapp.com",
+            databaseURL: "https://understanding-tracker-default-rtdb.firebaseio.com",
+            projectId: "understanding-tracker",
+            storageBucket: "understanding-tracker.appspot.com",
+            messagingSenderId: "487928410018",
+            appId: "1:487928410018:web:75296165a4b29a7b848cfb"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function updateCounts(snapshot) {
+            if (snapshot.exists()) {
+                document.getElementById('understand-count').textContent = snapshot.val().understand || 0;
+                document.getElementById('help-count').textContent = snapshot.val().help || 0;
+                document.getElementById('dont-understand-count').textContent = snapshot.val().dont_understand || 0;
+            }
+        }
+
+        // Fetch initial data and listen for updates
+        database.ref('responses').on('value', snapshot => {
+            updateCounts(snapshot);
+        });
+
+        function resetCounts() {
+            const confirmReset = confirm("Are you sure you want to reset all counts?");
+            if (confirmReset) {
+                database.ref('responses').set({
+                    understand: 0,
+                    help: 0,
+                    dont_understand: 0
+                });
+            }
+        }
+    </script>
+</body>
+</html>
